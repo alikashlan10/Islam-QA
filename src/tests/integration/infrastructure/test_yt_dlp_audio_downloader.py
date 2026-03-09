@@ -1,5 +1,3 @@
-# src/tests/integration/infrastructure/test_yt_dlp_audio_downloader_integration.py
-
 import os
 import pytest
 from src.infrastructure.youtube.yt_dlp_audio_downloader import YtDlpAudioDownloader

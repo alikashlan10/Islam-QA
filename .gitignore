@@ -217,3 +217,8 @@ __marimo__/
 
 # fixtures (used for testing)
 src/tests/fixtures
+
+__pycache__/
+*.pyc
+.env
+alembic/versions/__pycache__/

@@ -18,6 +18,10 @@ class AppConfig(BaseSettings):
     GROQ_API_KEY:str = ""
     GROQ_WHISPER_MODEL:str = "whisper-large-v3"
     
+    ##database
+    DATABASE_URL:str
+    TEST_DATABASE_URL:str
+
     class Config:
         env_file = ".env"
 
