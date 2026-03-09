@@ -5,17 +5,18 @@ import os
 class AppConfig(BaseSettings):
 
     # Logs
-    LOG_LEVEL:str
-    LOG_FILE:str
+    LOG_LEVEL:str = "INFO"
+    LOG_FILE:str = "logs/app.log"
+
 
     # LLMs
-    GEMINI_API_KEY:str
-    GEMINI_MODEL_NAME:str
+    GEMINI_API_KEY:str = ""
+    GEMINI_MODEL_NAME:str = "gemini-1.5-flash"
 
     ## transcriber provider
-    TRANSCRIBER_PROVIDER:TranscriberProvider = TranscriberProvider.WHISPER_LOCAL
-    GROQ_API_KEY:str
-    GROQ_WHISPER_MDOEL:str
+    TRANSCRIBER_PROVIDER:TranscriberProvider = TranscriberProvider.GROQ
+    GROQ_API_KEY:str = ""
+    GROQ_WHISPER_MODEL:str = "whisper-large-v3"
     
     class Config:
         env_file = ".env"

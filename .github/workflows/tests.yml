@@ -38,5 +38,13 @@ jobs:
 
       # Step 5: Run the tests
       - name: Run tests
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_MODEL_NAME: ${{ vars.GEMINI_MODEL_NAME }}
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          GROQ_WHISPER_MODEL: ${{ vars.GROQ_WHISPER_MODEL }}
+          TRANSCRIBER_PROVIDER: ${{ vars.TRANSCRIBER_PROVIDER }}
+          LOG_LEVEL: INFO
+          LOG_FILE: logs/app.log
         run: |
           pytest --tb=short -v --exitfirst
