@@ -27,7 +27,7 @@ class GroqTranscriber(Transcriber):
     def __init__(
         self,
         api_key: str = config.GROQ_API_KEY,
-        model: str = config.GROQ_WHISPER_MDOEL,
+        model: str = config.GROQ_WHISPER_MODEL,
         language: str = "ar",
     ) -> None:
         self._client   = Groq(api_key=api_key)
