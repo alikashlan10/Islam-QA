@@ -12,3 +12,6 @@ yt-dlp
 sqlalchemy
 alembic
 psycopg2-binary
+langchain_huggingface
+langchain_qdrant
+langchain_cohere

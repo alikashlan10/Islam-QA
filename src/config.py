@@ -1,5 +1,8 @@
 from pydantic_settings import BaseSettings
 from src.domain.enums.transcriberProvider import TranscriberProvider
+from src.domain.enums.chunking_strategy import ChunkingStrategy
+from src.domain.enums.vector_store_provider import VectorStoreProvider
+from src.domain.enums.embedder_provider import EmbedderProvider
 import os 
 
 class AppConfig(BaseSettings):
@@ -21,6 +24,21 @@ class AppConfig(BaseSettings):
     ##database
     DATABASE_URL:str = ""
     TEST_DATABASE_URL:str = ""
+
+    ##Vectordb
+    QDRANT_URL:str = ""
+    QDRANT_COLLECTION_NAME:str = "islam_qa_v1"
+    
+    ##Emebdding model
+    HUGGINGFACE_EMBEDDING_MODEL_NAME:str = ""
+
+    ##app
+    VECTOR_STORE_PROVIDER:  VectorStoreProvider= VectorStoreProvider.QDRANT
+    EMBEDDING_PROVIDER:     EmbedderProvider   = EmbedderProvider.HUGGINGFACE
+    CHUNKING_STRATEGY:      ChunkingStrategy   = ChunkingStrategy.RECURSIVE
+    CHUNK_SIZE:             int                = 500
+    CHUNK_OVERLAP:          int                = 100
+
 
     class Config:
         env_file = ".env"
