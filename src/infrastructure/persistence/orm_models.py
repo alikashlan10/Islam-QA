@@ -57,7 +57,9 @@ class AudioMetadataORM(Base):
                               default=lambda: datetime.now(timezone.utc))
     transcribed      = Column(Boolean, nullable=False, default=False)
     qa_extracted     = Column(Boolean, nullable=False, default=False)
-    embedded         = Column(Boolean, nullable=False, default=False)
+
+    #Not needed , we will track it using embdding_id in QApairORM
+    #embedded         = Column(Boolean, nullable=False, default=False)
 
     # relationships
     playlist         = relationship("PlaylistORM",    back_populates="audio_files")
