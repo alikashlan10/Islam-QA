@@ -16,7 +16,7 @@ import google.api_core.exceptions as google_exceptions
 
 from src.infrastructure.extractors.geminiQAExtractor import GeminiQAExtractor, QAListSchema,QAPairSchema
 
-from src.domain.models.qaPair import QAPair
+from src.domain.models.qa_pair import QAPair
 
 
 # ── Fixtures ──────────────────────────────────────────────────────────────────

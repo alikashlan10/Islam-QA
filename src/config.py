@@ -3,6 +3,7 @@ from src.domain.enums.transcriberProvider import TranscriberProvider
 from src.domain.enums.chunking_strategy import ChunkingStrategy
 from src.domain.enums.vector_store_provider import VectorStoreProvider
 from src.domain.enums.embedder_provider import EmbedderProvider
+from src.domain.enums.qa_extractor_provider import QAExtractorProvider
 import os 
 
 class AppConfig(BaseSettings):
@@ -28,9 +29,10 @@ class AppConfig(BaseSettings):
     ##Vectordb
     QDRANT_URL:str = ""
     QDRANT_COLLECTION_NAME:str = "islam_qa_v1"
+    QDRANT_VECTOR_SIZE : int = 512
     
     ##Emebdding model
-    HUGGINGFACE_EMBEDDING_MODEL_NAME:str = ""
+    EMBEDDING_MODEL_NAME:str = ""
 
     ##app
     VECTOR_STORE_PROVIDER:  VectorStoreProvider= VectorStoreProvider.QDRANT
@@ -38,7 +40,8 @@ class AppConfig(BaseSettings):
     CHUNKING_STRATEGY:      ChunkingStrategy   = ChunkingStrategy.RECURSIVE
     CHUNK_SIZE:             int                = 500
     CHUNK_OVERLAP:          int                = 100
-
+    AUDIO_OUTPUT_DIR:       str                = "./video_downloads"
+    QA_EXTRACTOR_PROVIDER: QAExtractorProvider = QAExtractorProvider.GEMINI
 
     class Config:
         env_file = ".env"

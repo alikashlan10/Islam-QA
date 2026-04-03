@@ -3,10 +3,14 @@ from src.domain.enums.vector_store_provider import VectorStoreProvider
 from langchain_core.embeddings import Embeddings
 from langchain_qdrant import QdrantVectorStore
 from langchain_community.vectorstores import Chroma
-
+from qdrant_client import QdrantClient
+from qdrant_client.models import Distance, VectorParams
+from src.config import AppConfig
 
 from src.logger.logger import setup_logger
 logger = setup_logger(__name__)
+
+config = AppConfig()
 
 class VectorStoreFactory:
     """
@@ -29,10 +33,24 @@ class VectorStoreFactory:
         logger.info(f"Creating vector store: provider={provider} collection={collection_name}")
 
         if provider == VectorStoreProvider.QDRANT:
-            return QdrantVectorStore.from_existing_collection(
-                embedding=embedder,
+
+            client = QdrantClient(url=qdrant_url)
+    
+            # create collection if it doesn't exist
+            existing = [c.name for c in client.get_collections().collections]
+            if collection_name not in existing:
+                client.create_collection(
+                    collection_name=collection_name,
+                    vectors_config=VectorParams(
+                        size=config.QDRANT_VECTOR_SIZE,
+                        distance=Distance.COSINE,
+                    ),
+                )
+
+            return QdrantVectorStore(
+                client=client,
                 collection_name=collection_name,
-                url=qdrant_url,
+                embedding=embedder,
             )
 
         elif provider == VectorStoreProvider.CHROMA:

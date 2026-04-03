@@ -19,8 +19,8 @@ from tenacity import (
 from pydantic import BaseModel, Field
 import logging
 
-from src.application.interfaces.QAExtractor import QAExtractor
-from src.domain.models.qaPair import QAPair
+from src.application.interfaces.qa_extractor import QAExtractor
+from src.domain.models.qa_pair import QAPair
 from src.logger.logger import setup_logger
 from src.config import AppConfig
 
@@ -51,8 +51,9 @@ class GeminiQAExtractor(QAExtractor):
 Your job is to read the provided text and identify all meaningful QA pairs within it.
 
 Rules:
+- Don't generate questions or answers
+- The text already has one or more qa pair just separate them
 - Each question must be self-contained and understandable without extra context.
-- Each answer must be concise, accurate, and directly supported by the text.
 - Do NOT invent information that is not present in the text.
 - Ignore filler, off-topic remarks, or repeated content.
 - If no clear QA pairs exist, return an empty list."""
