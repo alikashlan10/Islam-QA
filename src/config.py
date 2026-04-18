@@ -29,14 +29,16 @@ class AppConfig(BaseSettings):
     ##Vectordb
     QDRANT_URL:str = ""
     QDRANT_COLLECTION_NAME:str = "islam_qa_v1"
+    QDRANT_API_KEY:str = ""
     QDRANT_VECTOR_SIZE : int = 512
     
     ##Emebdding model
     EMBEDDING_MODEL_NAME:str = ""
-
+    COHERE_API_KEY:str = ""
+    EMBEDDING_PROVIDER:     EmbedderProvider   = EmbedderProvider.COHERE
+    
     ##app
     VECTOR_STORE_PROVIDER:  VectorStoreProvider= VectorStoreProvider.QDRANT
-    EMBEDDING_PROVIDER:     EmbedderProvider   = EmbedderProvider.HUGGINGFACE
     CHUNKING_STRATEGY:      ChunkingStrategy   = ChunkingStrategy.RECURSIVE
     CHUNK_SIZE:             int                = 500
     CHUNK_OVERLAP:          int                = 100

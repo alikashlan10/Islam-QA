@@ -28,7 +28,7 @@ from src.domain.enums.separators import Separators
 # ── Use Cases ─────────────────────────────────────────────────────────────────
 from src.application.usecases.ingest_video import IngestVideoUseCase
 from src.application.usecases.ingest_playlist import IngestPlaylistUseCase
-from src.application.usecases.embed_qa_pairs import EmbedQAPairsUseCase
+from src.application.usecases.embed_transcribts import EmbedTranscriptUseCase
 
 logger = setup_logger(__name__)
 config = AppConfig()
@@ -57,25 +57,26 @@ chunker = ChunkerFactory().create(
     strategy      = config.CHUNKING_STRATEGY,
     chunk_size    = config.CHUNK_SIZE,
     chunk_overlap = config.CHUNK_OVERLAP,
-    separators    = Separators.ARABIC.value,
+    separators    = Separators.ARABIC,
 )
 
 # ── Embedder ──────────────────────────────────────────────────────────────────
 
-# embedder = EmbedderFactory().create(
-#     provider   = config.EMBEDDING_PROVIDER,
-#     model_name = config.EMBEDDING_MODEL_NAME,
-#     api_key    = config.GEMINI_API_KEY,   # only used if provider=google
-# )
+embedder = EmbedderFactory().create(
+    provider   = config.EMBEDDING_PROVIDER,
+    model_name = config.EMBEDDING_MODEL_NAME,
+    api_key    = config.COHERE_API_KEY,   # only used if provider=google
+)
 
-# # ── Vector Store ──────────────────────────────────────────────────────────────
+# ── Vector Store ──────────────────────────────────────────────────────────────
 
-# vector_store = VectorStoreFactory().create(
-#     provider        = config.VECTOR_STORE_PROVIDER,
-#     embedder        = embedder,
-#     collection_name = config.QDRANT_COLLECTION_NAME,
-#     qdrant_url      = config.QDRANT_URL,
-# )
+vector_store = VectorStoreFactory().create(
+    provider        = config.VECTOR_STORE_PROVIDER,
+    embedder        = embedder,
+    collection_name = config.QDRANT_COLLECTION_NAME,
+    qdrant_url      = config.QDRANT_URL,
+    qdrant_api_key  = config.QDRANT_API_KEY
+)
 
 # ── Use Cases ─────────────────────────────────────────────────────────────────
 
@@ -92,10 +93,11 @@ ingest_playlist_use_case = IngestPlaylistUseCase(
     ingest_video  = ingest_video_use_case,
 )
 
-# embed_qa_pairs_use_case = EmbedQAPairsUseCase(
-#     chunker      = chunker,
-#     vector_store = vector_store,
-#     qa_repo      = qa_repo,
-# )
+embed_transcripts_use_case = EmbedTranscriptUseCase(
+    chunker      = chunker,
+    vector_store = vector_store,
+    transcript_repo= transcript_repo ,
+    audio_repo= audio_repo
+)
 
 logger.info("All dependencies initialized.")

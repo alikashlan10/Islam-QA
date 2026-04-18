@@ -1,9 +1,8 @@
 from enum import Enum
-from typing import List
 
-class Separators(Enum):
+class Separators(str, Enum):
 
-    ARABIC : List = ["\n\n", "\n", ".", "،", "؟", "!", " ", ""],   
-    ENGLISH: List = ["\n\n", "\n", ".", "!", "?",  " ", ""]
+    ARABIC : list = ["\n\n", "\n", ".", "،", "؟", "!", " ", ""],   
+    ENGLISH: list = ["\n\n", "\n", ".", "!", "?",  " ", ""]
 
 

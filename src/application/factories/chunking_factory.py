@@ -23,7 +23,7 @@ class ChunkerFactory:
         strategy:      ChunkingStrategy,
         chunk_size:    int,
         chunk_overlap: int,
-        separators:    List, 
+        separators:    list, 
     ) -> TextSplitter:
 
         logger.info(f"Creating chunker: strategy={strategy} "
