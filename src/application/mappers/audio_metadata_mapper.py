@@ -25,6 +25,4 @@ class AudioMetadataMapper:
             language         = audio.language,
             tags             = ",".join(audio.tags) if audio.tags else None,
             downloaded_at    = audio.downloaded_at,
-            transcribed      = False,
-            qa_extracted     = False,
         )

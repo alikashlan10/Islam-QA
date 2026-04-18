@@ -14,7 +14,7 @@ target_metadata = Base.metadata
 
 # read DATABASE_URL from your AppConfig instead of alembic.ini
 app_config = AppConfig()
-config.set_main_option("sqlalchemy.url", app_config.DATABASE_URL)
+config.set_main_option("sqlalchemy.url", app_config.TEST_DATABASE_URL)
 
 
 def run_migrations_offline() -> None:

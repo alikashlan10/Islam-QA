@@ -22,6 +22,14 @@ LIMIT        = 1   # process only one video
 
 if __name__ == "__main__":
 
+    logger.info("")
+    logger.info("="*30)
+    logger.info("="*30)
+    logger.info("Starting Ingestion process")
+    logger.info("="*30)
+    logger.info("="*30)
+    logger.info("")
+
     logger.info("Initializing database...")
     init_db()
 

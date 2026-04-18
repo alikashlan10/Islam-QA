@@ -12,7 +12,7 @@ config = AppConfig()
 
 
 engine = create_engine(
-    config.DATABASE_URL,
+    config.TEST_DATABASE_URL,
     echo=False,          # set to True to log all SQL statements (useful for debugging)
     pool_pre_ping=True,  # test connections before using them — handles dropped connections
 )
