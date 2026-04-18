@@ -26,6 +26,7 @@ class VectorStoreFactory:
         collection_name: str,
         # Qdrant
         qdrant_url:      str = None,
+        qdrant_api_key: str =None,
         # Chroma
         chroma_persist_dir: str = None,
     ) -> VectorStore:
@@ -34,7 +35,7 @@ class VectorStoreFactory:
 
         if provider == VectorStoreProvider.QDRANT:
 
-            client = QdrantClient(url=qdrant_url)
+            client = QdrantClient(url=qdrant_url, api_key=qdrant_api_key)
     
             # create collection if it doesn't exist
             existing = [c.name for c in client.get_collections().collections]

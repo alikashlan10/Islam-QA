@@ -1,5 +1,5 @@
-from typing import Optional
-
+from typing import Optional , List
+from datetime import datetime
 from src.infrastructure.persistence.orm_models import TranscriptORM
 from src.infrastructure.persistence.database import get_db
 from src.logger.logger import setup_logger
@@ -65,11 +65,30 @@ class TranscriptRepository:
 
             return transcript[0] if transcript else False
         
-    def get_not_embedded(self):
-        """Fetch all transcripts that are not embedded yet."""
+    def get_unembedded(self, limit: int = 100) -> list[TranscriptORM]:
+        """
+        Fetch a batch of unembedded transcripts.
+        No offset is used — dataset shrinks as we mark rows embedded.
+        """
         with get_db() as db:
             return (
                 db.query(TranscriptORM)
                 .filter(TranscriptORM.embedded == False)
+                .order_by(TranscriptORM.created_at)
+                .limit(limit)
+                .all()
+            )
+        
+    def get_all(self, limit: int = 100, offset: int = 0) -> list[TranscriptORM]:
+        """
+        Fetch all transcripts with simple pagination.
+        Used for force re-embedding.
+        """
+        with get_db() as db:
+            return (
+                db.query(TranscriptORM)
+                .order_by(TranscriptORM.created_at)
+                .offset(offset)
+                .limit(limit)
                 .all()
             )
