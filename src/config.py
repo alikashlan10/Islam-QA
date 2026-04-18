@@ -3,7 +3,6 @@ from src.domain.enums.transcriberProvider import TranscriberProvider
 from src.domain.enums.chunking_strategy import ChunkingStrategy
 from src.domain.enums.vector_store_provider import VectorStoreProvider
 from src.domain.enums.embedder_provider import EmbedderProvider
-from src.domain.enums.qa_extractor_provider import QAExtractorProvider
 import os 
 
 class AppConfig(BaseSettings):
@@ -16,6 +15,7 @@ class AppConfig(BaseSettings):
     # LLMs
     GEMINI_API_KEY:str = ""
     GEMINI_MODEL_NAME:str = "gemini-1.5-flash"
+    GROQ_LLM_MODEL:str = "openai/gpt-oss-120b"
 
     ## transcriber provider
     TRANSCRIBER_PROVIDER:TranscriberProvider = TranscriberProvider.GROQ
@@ -41,7 +41,6 @@ class AppConfig(BaseSettings):
     CHUNK_SIZE:             int                = 500
     CHUNK_OVERLAP:          int                = 100
     AUDIO_OUTPUT_DIR:       str                = "./video_downloads"
-    QA_EXTRACTOR_PROVIDER: QAExtractorProvider = QAExtractorProvider.GEMINI
 
     class Config:
         env_file = ".env"

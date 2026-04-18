@@ -13,7 +13,6 @@ from src.logger.logger import setup_logger
 
 # ── Factories ─────────────────────────────────────────────────────────────────
 from src.application.factories.transcriber_factory import TranscriberFactory
-from src.application.factories.qa_extractor_factory import QAExtractorFactory
 from src.application.factories.chunking_factory import ChunkerFactory
 from src.application.factories.embedder_factory import EmbedderFactory
 from src.application.factories.vector_store_factory import VectorStoreFactory
@@ -24,7 +23,6 @@ from src.infrastructure.youtube.yt_dlp_audio_downloader import YtDlpAudioDownloa
 from src.infrastructure.persistence.repositories.playlist_repository import PlaylistRepository
 from src.infrastructure.persistence.repositories.audio_metadata_repository import AudioMetadataRepository
 from src.infrastructure.persistence.repositories.transcript_repository import TranscriptRepository
-from src.infrastructure.persistence.repositories.qa_pair_repository import QAPairRepository
 from src.domain.enums.separators import Separators
 
 # ── Use Cases ─────────────────────────────────────────────────────────────────
@@ -41,11 +39,6 @@ transcriber = TranscriberFactory().create(
     provider = config.TRANSCRIBER_PROVIDER,
 )
 
-# ── QA Extractor ──────────────────────────────────────────────────────────────
-
-extractor = QAExtractorFactory().create(
-    provider = config.QA_EXTRACTOR_PROVIDER,
-)
 
 # ── Downloader + Fetcher ──────────────────────────────────────────────────────
 
@@ -57,7 +50,6 @@ fetcher    = YtDlpPlaylistFetcher()
 playlist_repo   = PlaylistRepository()
 audio_repo      = AudioMetadataRepository()
 transcript_repo = TranscriptRepository()
-qa_repo         = QAPairRepository()
 
 # ── Chunker ───────────────────────────────────────────────────────────────────
 
@@ -90,10 +82,8 @@ chunker = ChunkerFactory().create(
 ingest_video_use_case = IngestVideoUseCase(
     downloader      = downloader,
     transcriber     = transcriber,
-    extractor       = extractor,
     audio_repo      = audio_repo,
     transcript_repo = transcript_repo,
-    qa_repo         = qa_repo,
 )
 
 ingest_playlist_use_case = IngestPlaylistUseCase(

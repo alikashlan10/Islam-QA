@@ -11,7 +11,6 @@ from langchain_core.documents import Document
 from langchain_core.vectorstores import VectorStore
 from langchain_text_splitters import TextSplitter
 
-from src.infrastructure.persistence.repositories.qa_pair_repository import QAPairRepository
 from src.infrastructure.persistence.repositories.audio_metadata_repository import AudioMetadataRepository
 from src.logger.logger import setup_logger
 
@@ -24,11 +23,10 @@ class EmbedQAPairsUseCase:
         self,
         chunker:      TextSplitter,
         vector_store: VectorStore,
-        qa_repo:      QAPairRepository,
     ) -> None:
         self._chunker      = chunker
         self._vector_store = vector_store
-        self._qa_repo      = qa_repo
+
 
     def execute(self, force: bool = False) -> None:
 
