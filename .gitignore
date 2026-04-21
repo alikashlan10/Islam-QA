@@ -222,3 +222,4 @@ __pycache__/
 *.pyc
 .env
 alembic/versions/__pycache__/
+video_downloads/

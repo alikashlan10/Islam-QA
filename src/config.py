@@ -44,6 +44,9 @@ class AppConfig(BaseSettings):
     CHUNK_OVERLAP:          int                = 100
     AUDIO_OUTPUT_DIR:       str                = "./video_downloads"
 
+    ##redis
+    REDIS_URL: str = "redis://localhost:6379/0"
+
     class Config:
         env_file = ".env"
 
