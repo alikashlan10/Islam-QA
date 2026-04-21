@@ -23,6 +23,7 @@ from src.infrastructure.youtube.yt_dlp_audio_downloader import YtDlpAudioDownloa
 from src.infrastructure.persistence.repositories.playlist_repository import PlaylistRepository
 from src.infrastructure.persistence.repositories.audio_metadata_repository import AudioMetadataRepository
 from src.infrastructure.persistence.repositories.transcript_repository import TranscriptRepository
+from src.infrastructure.persistence.repositories.job_repository import JobRepository
 from src.domain.enums.separators import Separators
 
 # ── Use Cases ─────────────────────────────────────────────────────────────────
@@ -50,6 +51,7 @@ fetcher    = YtDlpPlaylistFetcher()
 playlist_repo   = PlaylistRepository()
 audio_repo      = AudioMetadataRepository()
 transcript_repo = TranscriptRepository()
+job_repo        = JobRepository()
 
 # ── Chunker ───────────────────────────────────────────────────────────────────
 
@@ -91,6 +93,7 @@ ingest_playlist_use_case = IngestPlaylistUseCase(
     fetcher       = fetcher,
     playlist_repo = playlist_repo,
     ingest_video  = ingest_video_use_case,
+    job_repo      = job_repo
 )
 
 embed_transcripts_use_case = EmbedTranscriptUseCase(

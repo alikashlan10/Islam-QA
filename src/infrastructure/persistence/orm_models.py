@@ -1,7 +1,8 @@
 from datetime import datetime, timezone
+import uuid
 from sqlalchemy import (
     Column, String, Float, Boolean, DateTime,
-    Text, ForeignKey
+    Text, ForeignKey , UUID , Integer , 
 )
 from sqlalchemy.orm import relationship, DeclarativeBase
 
@@ -13,7 +14,7 @@ class Base(DeclarativeBase):
 
 
 ## ORM Models 
-######################################################################################################
+
 class PlaylistORM(Base):
     __tablename__ = "playlists"
 
@@ -29,7 +30,7 @@ class PlaylistORM(Base):
         return f"<Playlist id={self.id} title={self.title}>"
 
 
-######################################################################################################
+
 class AudioMetadataORM(Base):
     __tablename__ = "audio_metadata"
 
@@ -68,7 +69,7 @@ class AudioMetadataORM(Base):
         return f"<AudioMetadata id={self.id} title={self.title}>"
 
 
-######################################################################################################
+
 class TranscriptORM(Base):
     __tablename__ = "transcripts"
 
@@ -91,3 +92,20 @@ class TranscriptORM(Base):
 
     def __repr__(self):
         return f"<Transcript id={self.id} video_id={self.video_id}>"
+
+
+class JobORM(Base):
+    __tablename__ = "jobs"
+
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+
+    type   = Column(String, nullable=False)
+    status = Column(String, nullable=False)
+
+    total   = Column(Integer, nullable=True)
+    success = Column(Integer, nullable=False, default=0)
+    failed  = Column(Integer, nullable=False, default=0)
+    skipped = Column(Integer, nullable=False, default=0)
+
+    created_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+    updated_at = Column(DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), onupdate=lambda: datetime.now(timezone.utc))
