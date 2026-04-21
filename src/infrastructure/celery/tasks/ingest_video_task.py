@@ -14,7 +14,7 @@ from src.config import AppConfig
 
 
 @celery_app.task(name="ingest_video_task")
-def ingest_video_task(video_url: str, playlist: dict = None):
+def ingest_video_task(video_url: str,job_id ,  playlist: dict = None):
 
     config = AppConfig()
 

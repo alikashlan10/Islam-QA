@@ -18,3 +18,5 @@ langchain_cohere
 celery 
 redis
 flower
+fastapi
+uvicorn
