@@ -11,6 +11,8 @@ class IngestPlaylistRequest(BaseModel):
 
 class EmbedRequest(BaseModel):
     force: bool = False
+    batch: int
+    
 
 class JobResponse(BaseModel):
     job_id: UUID

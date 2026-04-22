@@ -5,11 +5,13 @@ from langchain_text_splitters import TextSplitter
 from src.infrastructure.persistence.repositories.transcript_repository import TranscriptRepository
 from src.infrastructure.persistence.repositories.audio_metadata_repository import AudioMetadataRepository
 from src.infrastructure.persistence.orm_models import TranscriptORM
+from src.infrastructure.persistence.repositories.job_repository import JobRepository
 from src.logger.logger import setup_logger
+from src.config import AppConfig
 import uuid
 
 logger = setup_logger(__name__)
-
+config = AppConfig()
 
 class EmbedTranscriptUseCase:
 
@@ -19,6 +21,7 @@ class EmbedTranscriptUseCase:
         vector_store: VectorStore,
         transcript_repo: TranscriptRepository,
         audio_repo: AudioMetadataRepository,
+        job_repo : JobRepository, 
         batch_size: int = 100,
     ) -> None:
         self._chunker = chunker
@@ -26,8 +29,9 @@ class EmbedTranscriptUseCase:
         self._transcript_repo = transcript_repo
         self._audio_repo = audio_repo
         self._batch_size = batch_size
+        self._job_repo = job_repo
 
-    def execute(self, force: bool = False) -> None:
+    def execute(self, job_id , force: bool = False) -> None:
 
         logger.info(f"Starting embedding process | force={force}")
 
@@ -41,6 +45,7 @@ class EmbedTranscriptUseCase:
         if not force:
 
             while True:
+
                 transcripts = self._transcript_repo.get_unembedded(limit=self._batch_size)
                 logger.info(f"loaded {len(transcripts)} from database")
 
@@ -49,24 +54,30 @@ class EmbedTranscriptUseCase:
                     break
                 
                 total += len(transcripts)
+                self._job_repo.update(job_id=job_id , total = total)
 
                 try:
-                    docs, ids, video_ids = self._prepare_batch(transcripts)
+                    docs, ids, video_ids  = self._prepare_batch(transcripts, job_id)
 
                     if not docs:
                         continue
-
+                    
+                    logger.info("Adding documents to vector store")
                     self._vector_store.add_documents(documents=docs, ids=ids)
+                    logger.info(f"Added {len(docs)} to {config.VECTOR_STORE_PROVIDER.value}")
 
                     # mark as embedded AFTER success
                     for vid in video_ids:
                         self._transcript_repo.mark_as_embedded(vid)
 
                     success += len(video_ids)
+                    self._job_repo.increment_success(job_id=job_id , count = len(video_ids) )
+                    
 
                 except Exception as e:
                     logger.error(f"Batch embedding failed: {e}")
                     failed += len(transcripts)
+                    self._job_repo.increment_failed(job_id=job_id ,count = len(transcripts))
                     break
 
         # ─────────────────────────────────────────────────────────────
@@ -86,19 +97,25 @@ class EmbedTranscriptUseCase:
                     break
 
                 total += len(transcripts)
+                self._job_repo.update(job_id=job_id , total = total)
 
                 try:
-                    docs, ids, _ = self._prepare_batch(transcripts)
+                    docs, ids, video_ids  = self._prepare_batch(transcripts , job_id)
 
-                    if docs:
-                        logger.info("Adding documents to vector store")
-                        self._vector_store.add_documents(documents=docs, ids=ids)
+                    if not docs:
+                        continue
+
+                    logger.info("Adding documents to vector store")
+                    self._vector_store.add_documents(documents=docs, ids=ids)
+                    logger.info(f"Added {len(docs)} to {config.VECTOR_STORE_PROVIDER.value}")
 
                     success += len(transcripts)
+                    self._job_repo.increment_success(job_id=job_id , count = len(video_ids) )
 
                 except Exception as e:
                     logger.error(f"Batch embedding failed: {e}")
-                    failed += len(transcripts)
+                    failed += len(transcripts , count=len(transcripts))
+                    self._job_repo.increment_failed(job_id=job_id , count = len(transcripts))
 
                 offset += self._batch_size
 
@@ -107,7 +124,7 @@ class EmbedTranscriptUseCase:
     # ─────────────────────────────────────────────────────────────
     # INTERNAL: PREPARE BATCH
     # ─────────────────────────────────────────────────────────────
-    def _prepare_batch(self, transcripts : list[TranscriptORM]):
+    def _prepare_batch(self, transcripts : list[TranscriptORM], job_id):
 
         logger.info("preparing batch")
 
@@ -124,6 +141,7 @@ class EmbedTranscriptUseCase:
 
             if not chunks:
                 logger.warning(f"No chunks for transcript: {transcript.video_id}")
+                self._job_repo.increment_skipped(job_id=job_id)
                 continue
 
             logger.info("appending Documents")    
@@ -144,4 +162,4 @@ class EmbedTranscriptUseCase:
 
             video_ids.append(transcript.video_id)
 
-        return docs, ids, video_ids
+        return docs, ids, video_ids 

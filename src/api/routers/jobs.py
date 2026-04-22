@@ -3,8 +3,8 @@ from pydantic import BaseModel, Field
 from uuid import UUID
 
 from src.infrastructure.persistence.repositories.job_repository import JobRepository
-from src.infrastructure.celery.tasks.ingest_video_task import ingest_video_task
 from src.infrastructure.celery.tasks.ingest_playlist_task import ingest_playlist_task
+from src.infrastructure.celery.tasks.embed_transcripts_task import embed_transcript_task
 from src.api.schemas.jobs import JobResponse , IngestPlaylistRequest , IngestVideoRequest , EmbedRequest , JobProgress
 from src.infrastructure.persistence.orm_models import JobORM
 from src.application.mappers.job_mapper import JobMapper
@@ -16,7 +16,7 @@ def get_job_repo():
 
 
 @router.post("/playlist",response_model=JobResponse)
-def create_playlist(request:IngestPlaylistRequest , job_repo:JobRepository = Depends(get_job_repo)):
+def ingest_playlist(request:IngestPlaylistRequest , job_repo:JobRepository = Depends(get_job_repo)):
 
     # define new job
     job = JobORM(
@@ -51,3 +51,25 @@ def get_job_progress(job_id : UUID , job_repo : JobRepository = Depends(get_job_
         raise HTTPException(status_code=404, detail="Job not found")
 
 
+@router.post("/embed" , response_model= JobResponse)
+def embed_transcripts(request:EmbedRequest , job_repo :JobRepository = Depends(get_job_repo)):
+
+    # define new job
+    job = JobORM(
+        status = "pending" , 
+        type = "embed_trnascripts" , 
+        total =0 
+    )
+
+    # create new job
+    job = job_repo.create(job=job)
+
+    # append to celery
+    embed_transcript_task.delay(request.batch , job.id , request.force )
+
+    # return job response
+    return JobResponse(
+        job_id=job.id , 
+        status= job.status , 
+        type = job.type
+    )
