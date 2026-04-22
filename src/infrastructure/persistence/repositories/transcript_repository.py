@@ -79,6 +79,20 @@ class TranscriptRepository:
                 .all()
             )
         
+    def count_unembedded(self) -> int:
+        """Count of transcripts not yet embedded."""
+        with get_db() as db:
+            return (
+                db.query(TranscriptORM)
+                .filter(TranscriptORM.embedded == False)
+                .count()
+            )
+
+    def count_all(self) -> int:
+        """Total count of all transcripts in the table."""
+        with get_db() as db:
+            return db.query(TranscriptORM).count()
+            
     def get_all(self, limit: int = 100, offset: int = 0) -> list[TranscriptORM]:
         """
         Fetch all transcripts with simple pagination.

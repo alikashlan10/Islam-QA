@@ -44,6 +44,12 @@ class EmbedTranscriptUseCase:
         # ─────────────────────────────────────────────────────────────
         if not force:
 
+            # get total
+            total += self._transcript_repo.count_unembedded()
+            logger.info(F"Total unembedded transcripts : {total}")
+            self._job_repo.update(job_id=job_id , total = total)
+
+
             while True:
 
                 transcripts = self._transcript_repo.get_unembedded(limit=self._batch_size)
@@ -53,8 +59,7 @@ class EmbedTranscriptUseCase:
                     logger.info("No more unembedded transcripts.")
                     break
                 
-                total += len(transcripts)
-                self._job_repo.update(job_id=job_id , total = total)
+
 
                 try:
                     docs, ids, video_ids  = self._prepare_batch(transcripts, job_id)
@@ -84,7 +89,12 @@ class EmbedTranscriptUseCase:
         # FORCE MODE (RE-EMBED EVERYTHING)
         # ─────────────────────────────────────────────────────────────
         else:
+
             offset = 0
+            total += self._transcript_repo.count_all()
+            logger.info(F"Total transcripts : {total}")
+            self._job_repo.update(job_id=job_id , total = total)
+
 
             while True:
                 transcripts = self._transcript_repo.get_all(
@@ -96,8 +106,6 @@ class EmbedTranscriptUseCase:
                     logger.info("Finished re-embedding all transcripts.")
                     break
 
-                total += len(transcripts)
-                self._job_repo.update(job_id=job_id , total = total)
 
                 try:
                     docs, ids, video_ids  = self._prepare_batch(transcripts , job_id)
