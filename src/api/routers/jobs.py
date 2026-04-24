@@ -21,7 +21,8 @@ def ingest_playlist(request:IngestPlaylistRequest , job_repo:JobRepository = Dep
     # define new job
     job = JobORM(
         status = "pending",
-        type = "ingest_playlist"
+        type = "ingest_playlist", 
+        total = 0
     )
 
     # create new job (DB)
@@ -58,7 +59,7 @@ def embed_transcripts(request:EmbedRequest , job_repo :JobRepository = Depends(g
     job = JobORM(
         status = "pending" , 
         type = "embed_trnascripts" , 
-        total =0 
+        total = 0 
     )
 
     # create new job
