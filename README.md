@@ -113,51 +113,8 @@ Copy the example and fill in your values:
 cp .env.example .env
 ```
 
-Required variables:
-
-```bash
-## logs
-LOG_LEVEL = INFO
-LOG_FILE = "logs/app.log"
-
-## LLMs
-GEMINI_API_KEY="" #but your API key 
-GEMINI_MODEL_NAME="gemini-1.5-flash"
-GROQ_LLM_MODEL="openai/gpt-oss-120b"
-
-## transcriber provider
-TRANSCRIBER_PROVIDER = "groq" #(localwhisper,whisperapi,groq,assemblyai)
-GROQ_API_KEY = "" # your groq API key 
-GROQ_WHISPER_MDOEL = "whisper-large-v3"
-
-## Database
-DATABASE_URL = "" # your database connection string (URL)
-
-# App
-CHUNKING_STRATEGY=recursive
-VECTOR_STORE_PROVIDER = qdrant
-EMBEDDING_PROVIDER = huggingface
-EMBEDDING_MODEL_NAME = "embed-multilingual-v3.0"
-COHERE_API_KEY = ""
-CHUNK_SIZE=500
-CHUNK_OVERLAP=100
-AUDIO_OUTPUT_DIR = "./video_downloads"
-QA_EXTRACTOR_PROVIDER = "gemini"
-
-##Vectordb
-QDRANT_URL = "" # your qdrant url
-QDRANT_API_KEY = "" you cohere API key
-QDRANT_COLLECTION_NAME = islam_qa_v1
-QDRANT_VECTOR_SIZE = 1024
 
 
-##Emebdding model
-HUGGINGFACE_EMBEDDING_MODEL_NAME = ""
-
-
-##redis
-REDIS_URL= "redis://localhost:6379/0"
-```
 
 ### Database Setup
 
